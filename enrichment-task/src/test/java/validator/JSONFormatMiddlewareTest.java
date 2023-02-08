@@ -21,7 +21,7 @@ public class JSONFormatMiddlewareTest {
 
     @Test
     @DisplayName("check method test - positive")
-    public void checkMethodPositiveTest() {
+    public void positiveTestCheck() {
         var enrichment = EnrichmentType.MSISDN;
         var validJson = "{\n" +
                 "    \"action\": \"button_click\",\n" +
@@ -30,16 +30,16 @@ public class JSONFormatMiddlewareTest {
                 "}";
         var validMessage = new Message(validJson, enrichment);
 
-        Assertions.assertEquals(true, jsonFormatMiddleware.check(validMessage));
+        Assertions.assertTrue(jsonFormatMiddleware.check(validMessage));
     }
 
     @Test
     @DisplayName("check method test - negative")
-    public void checkMethodNegativeTest() {
+    public void negativeTestCheck() {
         var enrichment = EnrichmentType.MSISDN;
         var invalidJson = "Invalid_Json";
         var validMessage = new Message(invalidJson, enrichment);
 
-        Assertions.assertEquals(false, jsonFormatMiddleware.check(validMessage));
+        Assertions.assertFalse(jsonFormatMiddleware.check(validMessage));
     }
 }

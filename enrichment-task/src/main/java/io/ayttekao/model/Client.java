@@ -1,10 +1,10 @@
 package io.ayttekao.model;
 
-public class User {
+public class Client {
     private String firstName;
     private String lastName;
 
-    public User(String firstName, String lastName) {
+    public Client(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }

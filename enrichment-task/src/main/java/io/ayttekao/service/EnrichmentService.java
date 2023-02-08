@@ -9,6 +9,7 @@ public class EnrichmentService {
     public EnrichmentService(MessageValidator validator) {
         this.validator = validator;
     }
+
     public String enrich(Message message) {
         return "Not implemented yet";
     }

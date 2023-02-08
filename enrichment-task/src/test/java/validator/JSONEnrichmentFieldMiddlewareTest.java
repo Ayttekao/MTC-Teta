@@ -21,7 +21,7 @@ public class JSONEnrichmentFieldMiddlewareTest {
 
     @Test
     @DisplayName("check method test - positive")
-    public void checkMethodPositiveTest() {
+    public void positiveTestCheck() {
         var enrichment = EnrichmentType.MSISDN;
         var validJson =
                 "{\n" +
@@ -31,12 +31,12 @@ public class JSONEnrichmentFieldMiddlewareTest {
                 "}";
         var validMessage = new Message(validJson, enrichment);
 
-        Assertions.assertEquals(true, jsonFieldMiddleware.check(validMessage));
+        Assertions.assertTrue(jsonFieldMiddleware.check(validMessage));
     }
 
     @Test
     @DisplayName("check method test - negative")
-    public void checkMethodNegativeTest() {
+    public void negativeTestCheck() {
         var enrichment = EnrichmentType.MSISDN;
         var invalidJson =
                 "{\n" +
@@ -46,6 +46,6 @@ public class JSONEnrichmentFieldMiddlewareTest {
                 "}";
         var validMessage = new Message(invalidJson, enrichment);
 
-        Assertions.assertEquals(false, jsonFieldMiddleware.check(validMessage));
+        Assertions.assertFalse(jsonFieldMiddleware.check(validMessage));
     }
 }
