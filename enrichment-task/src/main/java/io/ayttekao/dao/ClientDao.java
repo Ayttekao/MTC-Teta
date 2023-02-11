@@ -2,37 +2,16 @@ package io.ayttekao.dao;
 
 import io.ayttekao.model.Client;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class ClientDao implements Dao<Client> {
-    private ConcurrentHashMap<Long, Client> clients = new ConcurrentHashMap<>();
+public interface ClientDao {
+    Client findByMsisdn(Long msisdn);
 
-    @Override
-    public Optional<Client> getById(Long id) {
-        return Optional.ofNullable(clients.get(id));
-    }
+    List<Client> getAll();
 
-    @Override
-    public List<Client> getAll() {
-        return new ArrayList<>(clients.values());
-    }
+    void save(Long msisdn, Client client);
 
-    @Override
-    public void save(Long id, Client client) {
-        clients.put(id, client);
-    }
+    void update(Long msisdn, Client client);
 
-    @Override
-    public void update(Long id, Client client) {
-        clients.replace(id, client);
-    }
-
-    @Override
-    public void delete(Long id) {
-        clients.remove(id);
-    }
-
+    void deleteByMsisdn(Long msisdn);
 }

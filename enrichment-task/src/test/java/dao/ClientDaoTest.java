@@ -1,7 +1,7 @@
 package dao;
 
 import io.ayttekao.dao.ClientDao;
-import io.ayttekao.dao.Dao;
+import io.ayttekao.dao.ClientDaoImpl;
 import io.ayttekao.model.Client;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,11 +13,11 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 public class ClientDaoTest {
-    private static Dao<Client> clientDao;
+    private static ClientDao clientDao;
 
     @BeforeAll
     static void init() {
-        clientDao = new ClientDao();
+        clientDao = new ClientDaoImpl();
     }
 
     @Test
@@ -30,11 +30,11 @@ public class ClientDaoTest {
 
         clientDao.save(id, client);
 
-        var clientFromDao = clientDao.getById(id).get();
+        var clientFromDao = clientDao.findByMsisdn(id);
 
         Assertions.assertEquals(firstName, clientFromDao.getFirstName());
         Assertions.assertEquals(lastName, clientFromDao.getLastName());
-        clientDao.delete(id);
+        clientDao.deleteByMsisdn(id);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ClientDaoTest {
 
         Assertions.assertNotNull(listClient);
         Assertions.assertEquals(idArray.length, listClient.size());
-        Arrays.stream(idArray).forEach(id -> clientDao.delete(id));
+        Arrays.stream(idArray).forEach(id -> clientDao.deleteByMsisdn(id));
     }
 
     @Test
@@ -64,11 +64,11 @@ public class ClientDaoTest {
         clientDao.save(id, client);
         clientDao.update(id, new Client(newFirstName, newLastName));
 
-        var clientFromDao = clientDao.getById(id).get();
+        var clientFromDao = clientDao.findByMsisdn(id);
 
         Assertions.assertEquals(newFirstName, clientFromDao.getFirstName());
         Assertions.assertEquals(newLastName, clientFromDao.getLastName());
-        clientDao.delete(id);
+        clientDao.deleteByMsisdn(id);
     }
 
     @Test
@@ -78,9 +78,14 @@ public class ClientDaoTest {
         var client = new Client("Elliot", "Alderson");
 
         clientDao.save(id, client);
-        clientDao.delete(id);
+        clientDao.deleteByMsisdn(id);
 
-        Assertions.assertFalse(clientDao.getById(id).isPresent());
+        var thrown = Assertions.assertThrows(
+                NoSuchElementException.class, () -> clientDao.findByMsisdn(id), "NoSuchElementException was expected"
+        );
+
+        Assertions.assertEquals("Client not found", thrown.getMessage());
     }
 
 }
+
