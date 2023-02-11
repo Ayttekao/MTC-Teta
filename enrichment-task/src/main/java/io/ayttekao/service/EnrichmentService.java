@@ -14,6 +14,10 @@ public class EnrichmentService {
     }
 
     public String enrich(Message message) {
-        return "Not implemented yet";
+        if (validator.isValid(message)) {
+            return "Not implemented yet";
+        } else {
+            return message.getContent();
+        }
     }
 }

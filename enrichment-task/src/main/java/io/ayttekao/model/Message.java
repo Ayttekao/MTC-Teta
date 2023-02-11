@@ -1,9 +1,13 @@
 package io.ayttekao.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
-    private final String content;
-    private final EnrichmentType enrichmentType;
+    private String content;
+    private EnrichmentType enrichmentType;
 }
