@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,27 +52,30 @@ public class JSONMarshallerTest {
     @DisplayName("marshall test - positive")
     public void positiveTestMarshall() {
         var marshalledMessageMap = jsonMarshaller.marshall(VALID_JSON);
+        var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY);
+        var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
 
-        assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
-        assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
-        assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
-        assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
-        assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
-        assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
+        for (String key : keyList) {
+            assertTrue(marshalledMessageMap.containsKey(key));
+        }
+        for (String value : valueList) {
+            assertTrue(marshalledMessageMap.containsValue(value));
+        }
     }
 
     @Test
     @DisplayName("marshall nested json object test - positive")
     public void positiveTestMarshallNestedJsonObject() {
         var marshalledMessageMap = jsonMarshaller.marshall(ENRICHMENT_JSON);
+        var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY, ENRICHMENT_KEY);
+        var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
 
-        assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
-        assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
-        assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
-        assertTrue(marshalledMessageMap.containsKey(ENRICHMENT_KEY));
-        assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
-        assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
-        assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
+        for (String key : keyList) {
+            assertTrue(marshalledMessageMap.containsKey(key));
+        }
+        for (String value : valueList) {
+            assertTrue(marshalledMessageMap.containsValue(value));
+        }
     }
 
     @Test
