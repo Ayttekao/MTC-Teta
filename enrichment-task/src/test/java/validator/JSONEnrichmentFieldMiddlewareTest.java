@@ -4,10 +4,12 @@ import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
 import io.ayttekao.validator.Middleware;
 import io.ayttekao.validator.json.JSONEnrichmentFieldMiddleware;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JSONEnrichmentFieldMiddlewareTest {
     private static final String VALID_JSON =
@@ -37,7 +39,7 @@ public class JSONEnrichmentFieldMiddlewareTest {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(VALID_JSON, enrichment);
 
-        Assertions.assertTrue(jsonFieldMiddleware.check(validMessage));
+        assertTrue(jsonFieldMiddleware.check(validMessage));
     }
 
     @Test
@@ -46,6 +48,6 @@ public class JSONEnrichmentFieldMiddlewareTest {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(INVALID_JSON, enrichment);
 
-        Assertions.assertFalse(jsonFieldMiddleware.check(validMessage));
+        assertFalse(jsonFieldMiddleware.check(validMessage));
     }
 }

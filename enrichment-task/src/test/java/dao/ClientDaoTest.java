@@ -3,7 +3,6 @@ package dao;
 import io.ayttekao.dao.ClientDao;
 import io.ayttekao.dao.ClientDaoImpl;
 import io.ayttekao.model.Client;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientDaoTest {
     private static ClientDao clientDao;
@@ -32,8 +33,8 @@ public class ClientDaoTest {
 
         var clientFromDao = clientDao.findByMsisdn(id);
 
-        Assertions.assertEquals(firstName, clientFromDao.getFirstName());
-        Assertions.assertEquals(lastName, clientFromDao.getLastName());
+        assertEquals(firstName, clientFromDao.getFirstName());
+        assertEquals(lastName, clientFromDao.getLastName());
         clientDao.deleteByMsisdn(id);
     }
 
@@ -48,8 +49,8 @@ public class ClientDaoTest {
 
         var listClient = clientDao.getAll();
 
-        Assertions.assertNotNull(listClient);
-        Assertions.assertEquals(idArray.length, listClient.size());
+        assertNotNull(listClient);
+        assertEquals(idArray.length, listClient.size());
         Arrays.stream(idArray).forEach(id -> clientDao.deleteByMsisdn(id));
     }
 
@@ -66,8 +67,8 @@ public class ClientDaoTest {
 
         var clientFromDao = clientDao.findByMsisdn(id);
 
-        Assertions.assertEquals(newFirstName, clientFromDao.getFirstName());
-        Assertions.assertEquals(newLastName, clientFromDao.getLastName());
+        assertEquals(newFirstName, clientFromDao.getFirstName());
+        assertEquals(newLastName, clientFromDao.getLastName());
         clientDao.deleteByMsisdn(id);
     }
 
@@ -80,11 +81,11 @@ public class ClientDaoTest {
         clientDao.save(id, client);
         clientDao.deleteByMsisdn(id);
 
-        var thrown = Assertions.assertThrows(
+        var thrown = assertThrows(
                 NoSuchElementException.class, () -> clientDao.findByMsisdn(id), "NoSuchElementException was expected"
         );
 
-        Assertions.assertEquals("Client not found", thrown.getMessage());
+        assertEquals("Client not found", thrown.getMessage());
     }
 
 }

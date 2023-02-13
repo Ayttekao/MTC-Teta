@@ -5,7 +5,6 @@ import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
 import org.json.JSONException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JSONMarshallerTest {
     private static final String ACTION_KEY = "action";
@@ -51,12 +52,12 @@ public class JSONMarshallerTest {
     public void positiveTestMarshall() {
         var marshalledMessageMap = jsonMarshaller.marshall(VALID_JSON);
 
-        Assertions.assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
+        assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
+        assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
+        assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
+        assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
+        assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
+        assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
     }
 
     @Test
@@ -64,24 +65,24 @@ public class JSONMarshallerTest {
     public void positiveTestMarshallNestedJsonObject() {
         var marshalledMessageMap = jsonMarshaller.marshall(ENRICHMENT_JSON);
 
-        Assertions.assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsKey(ENRICHMENT_KEY));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
-        Assertions.assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
+        assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
+        assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
+        assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
+        assertTrue(marshalledMessageMap.containsKey(ENRICHMENT_KEY));
+        assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
+        assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
+        assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
     }
 
     @Test
     @DisplayName("marshall test - negative")
     public void negativeTestMarshall() {
 
-        var thrown = Assertions.assertThrows(
+        var thrown = assertThrows(
                 RuntimeException.class, () -> jsonMarshaller.marshall(INVALID_JSON), "RuntimeException was expected"
         );
 
-        Assertions.assertEquals(RuntimeException.class, thrown.getClass());
+        assertEquals(RuntimeException.class, thrown.getClass());
     }
 
     @Test
