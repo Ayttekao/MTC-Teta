@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -12,8 +13,8 @@ public class JSONMarshaller implements MessageMarshaller {
     private final ObjectMapper mapper;
 
     @Override
-    public Map<String, String> marshall(String message) {
-        TypeReference<Map<String, String>> typeRef = new TypeReference<>() {};
+    public HashMap<String, Object> marshall(String message) {
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
         try {
             return mapper.readValue(message, typeRef);
@@ -23,9 +24,9 @@ public class JSONMarshaller implements MessageMarshaller {
     }
 
     @Override
-    public String unmarshall(Map<String, String> map) {
+    public String unmarshall(Map<String, Object> marshalledMessageMap) {
         try {
-            return mapper.writeValueAsString(map);
+            return mapper.writeValueAsString(marshalledMessageMap);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e.getMessage());
         }

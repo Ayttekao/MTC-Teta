@@ -3,7 +3,7 @@ package io.ayttekao.marshaller;
 import java.util.Map;
 
 public interface MessageMarshaller {
-    Map<String, String> marshall(String message);
+    Map<String, Object> marshall(String message);
 
-    String unmarshall(Map<String, String> map);
+    String unmarshall(Map<String, Object> map);
 }

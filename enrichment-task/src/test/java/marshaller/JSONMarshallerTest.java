@@ -3,6 +3,7 @@ package marshaller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
+import io.ayttekao.model.Client;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,11 +21,22 @@ public class JSONMarshallerTest {
     private static final String ACTION_VALUE = "button_click";
     private static final String PAGE_VALUE = "book_card";
     private static final String MSISDN_VALUE = "88005553535";
+    private static final String ENRICHMENT_KEY = "enrichment";
     private static final String VALID_JSON =
             "{\n" +
                     "\"action\":\"button_click\",\n" +
                     "\"page\":\"book_card\",\n" +
                     "\"msisdn\":\"88005553535\"\n" +
+                    "}";
+    private static final String ENRICHMENT_JSON =
+            "{\n" +
+                    "\"action\": \"button_click\",\n" +
+                    "\"page\": \"book_card\",\n" +
+                    "\"msisdn\": \"88005553535\",\n" +
+                    "\"enrichment\": {\n" +
+                    "\"firstName\": \"Vasya\",\n" +
+                    "\"lastName\": \"Ivanov\"\n" +
+                    "}\n" +
                     "}";
     private static final String INVALID_JSON = "Invalid_Json";
     private static MessageMarshaller jsonMarshaller;
@@ -35,20 +47,34 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("marshall method test - positive")
+    @DisplayName("marshall test - positive")
     public void positiveTestMarshall() {
-        var map = jsonMarshaller.marshall(VALID_JSON);
+        var marshalledMessageMap = jsonMarshaller.marshall(VALID_JSON);
 
-        Assertions.assertTrue(map.containsKey(ACTION_KEY));
-        Assertions.assertTrue(map.containsKey(PAGE_KEY));
-        Assertions.assertTrue(map.containsKey(MSISDN_KEY));
-        Assertions.assertTrue(map.containsValue(ACTION_VALUE));
-        Assertions.assertTrue(map.containsValue(PAGE_VALUE));
-        Assertions.assertTrue(map.containsValue(MSISDN_VALUE));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
     }
 
     @Test
-    @DisplayName("marshall method test - negative")
+    @DisplayName("marshall nested json object test - positive")
+    public void positiveTestMarshallNestedJsonObject() {
+        var marshalledMessageMap = jsonMarshaller.marshall(ENRICHMENT_JSON);
+
+        Assertions.assertTrue(marshalledMessageMap.containsKey(ACTION_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(PAGE_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(MSISDN_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsKey(ENRICHMENT_KEY));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(ACTION_VALUE));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(PAGE_VALUE));
+        Assertions.assertTrue(marshalledMessageMap.containsValue(MSISDN_VALUE));
+    }
+
+    @Test
+    @DisplayName("marshall test - negative")
     public void negativeTestMarshall() {
 
         var thrown = Assertions.assertThrows(
@@ -59,16 +85,31 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("unmarshall method test - positive")
+    @DisplayName("unmarshall test - positive")
     public void positiveTestUnmarshall() throws JSONException {
-        var map = new HashMap<String, String>();
-        map.put(ACTION_KEY, ACTION_VALUE);
-        map.put(PAGE_KEY, PAGE_VALUE);
-        map.put(MSISDN_KEY, MSISDN_VALUE);
+        var marshalledMessageMap = new HashMap<String, Object>();
+        marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
+        marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
+        marshalledMessageMap.put(MSISDN_KEY, MSISDN_VALUE);
 
-        var json = jsonMarshaller.unmarshall(map);
+        var json = jsonMarshaller.unmarshall(marshalledMessageMap);
 
         JSONAssert.assertEquals(VALID_JSON, json, JSONCompareMode.STRICT);
         JSONAssert.assertEquals(VALID_JSON, json, JSONCompareMode.LENIENT);
+    }
+
+    @Test
+    @DisplayName("unmarshall nested json object test - positive")
+    public void positiveTestUnmarshallNestedJsonObject() throws JSONException {
+        var marshalledMessageMap = new HashMap<String, Object>();
+        marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
+        marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
+        marshalledMessageMap.put(MSISDN_KEY, MSISDN_VALUE);
+        marshalledMessageMap.put(ENRICHMENT_KEY, new Client("Vasya", "Ivanov"));
+
+        var json = jsonMarshaller.unmarshall(marshalledMessageMap);
+
+        JSONAssert.assertEquals(ENRICHMENT_JSON, json, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(ENRICHMENT_JSON, json, JSONCompareMode.LENIENT);
     }
 }
