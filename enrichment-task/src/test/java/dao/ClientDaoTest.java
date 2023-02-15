@@ -33,8 +33,9 @@ public class ClientDaoTest {
 
         var clientFromDao = clientDao.findByMsisdn(id);
 
-        assertEquals(firstName, clientFromDao.getFirstName());
-        assertEquals(lastName, clientFromDao.getLastName());
+        assertTrue(clientFromDao.isPresent());
+        assertEquals(firstName, clientFromDao.get().getFirstName());
+        assertEquals(lastName, clientFromDao.get().getLastName());
         clientDao.deleteByMsisdn(id);
     }
 
@@ -67,8 +68,9 @@ public class ClientDaoTest {
 
         var clientFromDao = clientDao.findByMsisdn(id);
 
-        assertEquals(newFirstName, clientFromDao.getFirstName());
-        assertEquals(newLastName, clientFromDao.getLastName());
+        assertTrue(clientFromDao.isPresent());
+        assertEquals(newFirstName, clientFromDao.get().getFirstName());
+        assertEquals(newLastName, clientFromDao.get().getLastName());
         clientDao.deleteByMsisdn(id);
     }
 
