@@ -83,11 +83,9 @@ public class ClientDaoTest {
         clientDao.save(id, client);
         clientDao.deleteByMsisdn(id);
 
-        var thrown = assertThrows(
-                NoSuchElementException.class, () -> clientDao.findByMsisdn(id), "NoSuchElementException was expected"
-        );
+        var clientFromDao = clientDao.findByMsisdn(id);
 
-        assertEquals("Client not found", thrown.getMessage());
+        assertTrue(clientFromDao.isEmpty());
     }
 
 }
