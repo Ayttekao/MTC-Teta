@@ -15,9 +15,9 @@ private EnrichmentType enrichmentType;
     }
 }
 ```
-DTO содержит сообщение content и тип обогащения enrichmentType.
+DTO содержит сообщение **content** и тип обогащения **enrichmentType**.
 
-MSISDN - это обогащение по номеру телефона. В качестве результата обогащения добавляются firstName и lastName в поле enrichment.
+**MSISDN** - это обогащение по номеру телефона. В качестве результата обогащения добавляются **firstName** и **lastName** в поле **enrichment**.
 
 ## Пример
 
@@ -63,7 +63,7 @@ public String enrich(Message message) {...}
 }
 ```
 
-Важно: Никакие другие API добавлять не нужно (CLI, GUI, REST). Работоспособность проверяем с помощью Unit-тестов.
+**Важно**: Никакие другие API добавлять **не нужно** (CLI, GUI, REST). Работоспособность проверяем с помощью Unit-тестов.
 
 ## Требования к реализации
 
