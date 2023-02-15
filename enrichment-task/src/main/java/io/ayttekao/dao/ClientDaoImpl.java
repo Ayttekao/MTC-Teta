@@ -5,20 +5,15 @@ import io.ayttekao.model.Client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientDaoImpl implements ClientDao {
     private final ConcurrentHashMap<Long, Client> clients = new ConcurrentHashMap<>();
 
     @Override
-    public Client findByMsisdn(Long msisdn) {
-        var client = clients.get(msisdn);
-
-        if (client == null) {
-            throw new NoSuchElementException("Client not found");
-        } else {
-            return client;
-        }
+    public Optional<Client> findByMsisdn(Long msisdn) {
+        return Optional.ofNullable(clients.get(msisdn));
     }
 
     @Override

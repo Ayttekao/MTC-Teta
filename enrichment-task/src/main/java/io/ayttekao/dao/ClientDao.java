@@ -3,9 +3,10 @@ package io.ayttekao.dao;
 import io.ayttekao.model.Client;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientDao {
-    Client findByMsisdn(Long msisdn);
+    Optional<Client> findByMsisdn(Long msisdn);
 
     List<Client> getAll();
 
