@@ -73,9 +73,9 @@ public class EnrichmentServiceImplTest {
         clientDao = new ClientDaoImpl();
         clientDao.save(88005553535L, new Client("Vasya", "Ivanov"));
         enrichmentServiceImpl = new EnrichmentServiceImpl(
+                messageMarshaller,
                 messageValidator,
-                clientDao,
-                messageMarshaller
+                clientDao
         );
     }
 

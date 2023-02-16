@@ -9,11 +9,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EnrichmentServiceImpl implements EnrichmentService {
     private static final String ENRICHMENT_KEY = "enrichment";
+    private final MessageMarshaller messageMarshaller;
     private final MessageValidator validator;
     private final ClientDao clientDao;
-    private final MessageMarshaller messageMarshaller;
 
+    @Override
     public String enrich(Message message) {
+        String response;
+
         if (validator.isValid(message)) {
             var marshalledMessageMap = messageMarshaller.marshall(message.getContent());
             marshalledMessageMap.remove(ENRICHMENT_KEY);
@@ -22,9 +25,11 @@ public class EnrichmentServiceImpl implements EnrichmentService {
                 marshalledMessageMap.put(ENRICHMENT_KEY, theUser);
             });
 
-            return messageMarshaller.unmarshall(marshalledMessageMap);
+            response = messageMarshaller.unmarshall(marshalledMessageMap);
         } else {
-            return message.getContent();
+            response = message.getContent();
         }
+
+        return response;
     }
 }
