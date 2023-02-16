@@ -7,6 +7,7 @@ import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.model.Client;
 import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
+import io.ayttekao.service.EnrichmentService;
 import io.ayttekao.service.EnrichmentServiceImpl;
 import io.ayttekao.validator.MessageValidatorImpl;
 import io.ayttekao.validator.Middleware;
@@ -57,7 +58,7 @@ public class EnrichmentServiceImplTest {
                     "\"action\":\"button_click\",\n" +
                     "\"page\":\"book_card\",\n" +
                     "}";
-    private static EnrichmentServiceImpl enrichmentServiceImpl;
+    private static EnrichmentService enrichmentServiceImpl;
     private static ClientDao clientDao;
 
     @BeforeAll
