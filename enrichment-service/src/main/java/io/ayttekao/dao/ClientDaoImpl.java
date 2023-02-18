@@ -28,9 +28,9 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void update(Long msisdn, Client client) {
-        var savedClient = clients.replace(msisdn, client);
+        var updatedClient = clients.replace(msisdn, client);
 
-        if (savedClient == null) {
+        if (updatedClient == null) {
             throw new NoSuchElementException("Client not found");
         }
     }
