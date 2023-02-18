@@ -49,8 +49,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("marshall test - positive")
-    public void positiveTestMarshall() {
+    public void shouldMarshallToMapWhenValidJson() {
         var marshalledMessageMap = jsonMarshaller.marshall(VALID_JSON);
         var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY);
         var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
@@ -64,8 +63,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("marshall nested json object test - positive")
-    public void positiveTestMarshallNestedJsonObject() {
+    public void shouldMarshallToMapWhenNestedJson() {
         var marshalledMessageMap = jsonMarshaller.marshall(ENRICHMENT_JSON);
         var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY, ENRICHMENT_KEY);
         var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
@@ -79,8 +77,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("marshall test - negative")
-    public void negativeTestMarshall() {
+    public void shouldThrowExceptionWhenInvalidJson() {
 
         var thrown = assertThrows(
                 RuntimeException.class, () -> jsonMarshaller.marshall(INVALID_JSON), "RuntimeException was expected"
@@ -90,8 +87,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("unmarshall test - positive")
-    public void positiveTestUnmarshall() throws JSONException {
+    public void shouldUnmarshallMapToValidJson() throws JSONException {
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
         marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
@@ -104,8 +100,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    @DisplayName("unmarshall nested json object test - positive")
-    public void positiveTestUnmarshallNestedJsonObject() throws JSONException {
+    public void shouldUnmarshallMapToNestedJson() throws JSONException {
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
         marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);

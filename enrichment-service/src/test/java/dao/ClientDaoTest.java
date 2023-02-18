@@ -4,11 +4,9 @@ import io.ayttekao.dao.ClientDao;
 import io.ayttekao.dao.ClientDaoImpl;
 import io.ayttekao.model.Client;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,8 +20,7 @@ public class ClientDaoTest {
     }
 
     @Test
-    @DisplayName("get method test - positive")
-    public void testGetById() {
+    public void shouldFindClientWhenAdding() {
         var id = new Random().nextLong();
         var firstName = "Elliot";
         var lastName = "Alderson";
@@ -40,8 +37,7 @@ public class ClientDaoTest {
     }
 
     @Test
-    @DisplayName("getAll method test - positive")
-    public void testGetAll() {
+    public void shouldGetAll() {
         var countClient = 5;
         var idArray = new Random().longs(countClient, Long.MIN_VALUE, Long.MAX_VALUE).toArray();
         var client = new Client("Elliot", "Alderson");
@@ -56,8 +52,7 @@ public class ClientDaoTest {
     }
 
     @Test
-    @DisplayName("update method test - positive")
-    public void testUpdate() {
+    public void shouldChangeClientWhenUpdate() {
         var id = new Random().nextLong();
         var client = new Client("Elliot", "Alderson");
         var newFirstName = "Mr";
@@ -75,8 +70,7 @@ public class ClientDaoTest {
     }
 
     @Test
-    @DisplayName("delete method test - positive")
-    public void testDelete() {
+    public void shouldReturnEmptyClientWhenDeleted() {
         var id = new Random().nextLong();
         var client = new Client("Elliot", "Alderson");
 

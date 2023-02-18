@@ -29,8 +29,7 @@ public class JSONFormatMiddlewareTest {
     }
 
     @Test
-    @DisplayName("check method test - positive")
-    public void positiveTestCheck() {
+    public void shouldTruedWhenValidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(VALID_JSON, enrichment);
 
@@ -38,8 +37,7 @@ public class JSONFormatMiddlewareTest {
     }
 
     @Test
-    @DisplayName("check method test - negative")
-    public void negativeTestCheck() {
+    public void shouldFalseWhenInvalidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(INVALID_JSON, enrichment);
 

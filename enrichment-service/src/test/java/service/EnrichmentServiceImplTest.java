@@ -111,7 +111,7 @@ public class EnrichmentServiceImplTest {
     }
 
     @Test
-    public void shouldReplaceEnrichmentFieldIfClientDifferent() throws JSONException {
+    public void shouldReplaceEnrichmentFieldWhenClientDifferent() throws JSONException {
         var message = new Message(ENRICHMENT_JSON_WITH_DIFFERENT_CLIENT, EnrichmentType.MSISDN);
 
         var result = enrichmentServiceImpl.enrich(message);
@@ -121,7 +121,7 @@ public class EnrichmentServiceImplTest {
     }
 
     @Test
-    public void test() throws JSONException {
+    public void shouldReturnSameMessageContentWhenClientUnknown() throws JSONException {
         var message = new Message(JSON_WITH_UNKNOWN_CLIENT, EnrichmentType.MSISDN);
 
         var result = enrichmentServiceImpl.enrich(message);
