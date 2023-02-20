@@ -5,7 +5,6 @@ import io.ayttekao.model.Message;
 import io.ayttekao.validator.Middleware;
 import io.ayttekao.validator.json.JSONEnrichmentFieldMiddleware;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

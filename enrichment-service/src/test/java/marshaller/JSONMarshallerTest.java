@@ -6,7 +6,6 @@ import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
