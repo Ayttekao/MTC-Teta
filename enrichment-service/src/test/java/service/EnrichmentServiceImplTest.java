@@ -1,132 +1,144 @@
 package service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ayttekao.dao.ClientDao;
-import io.ayttekao.dao.ClientDaoImpl;
-import io.ayttekao.marshaller.JSONMarshaller;
+import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
 import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
 import io.ayttekao.service.EnrichmentService;
 import io.ayttekao.service.EnrichmentServiceImpl;
-import io.ayttekao.validator.MessageValidatorImpl;
-import io.ayttekao.validator.Middleware;
-import io.ayttekao.validator.json.JSONEnrichmentFieldMiddleware;
-import io.ayttekao.validator.json.JSONFormatMiddleware;
-import org.json.JSONException;
-import org.junit.jupiter.api.BeforeAll;
+import io.ayttekao.validator.MessageValidator;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import java.util.HashMap;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EnrichmentServiceImplTest {
+    private static final String ACTION_KEY = "action";
+    private static final String PAGE_KEY = "page";
+    private static final String MSISDN_KEY = "msisdn";
+    private static final String ACTION_VALUE = "button_click";
+    private static final String PAGE_VALUE = "book_card";
+    private static final String ENRICHMENT_KEY = "enrichment";
+    private static final String MSISDN_VALUE = "88005553535";
+    private static final Client CLIENT = new Client("Vasya", "Ivanov");
+    private static final Client UNKNOWN_CLIENT = new Client("Darya", "Zayceva");
     private static final String VALID_JSON =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "\"msisdn\":\"88005553535\"\n" +
-                    "}";
+            """
+            {
+                "action":"button_click",
+                "page":"book_card",
+                "msisdn":"88005553535"
+            }
+            """;
     private static final String ENRICHMENT_JSON =
-            "{\n" +
-                    "\"action\": \"button_click\",\n" +
-                    "\"page\": \"book_card\",\n" +
-                    "\"msisdn\": \"88005553535\",\n" +
-                    "\"enrichment\": {\n" +
-                    "\"firstName\": \"Vasya\",\n" +
-                    "\"lastName\": \"Ivanov\"\n" +
-                    "}\n" +
-                    "}";
+            """
+            {
+                "action": "button_click",
+                "page": "book_card",
+                "msisdn": "88005553535",
+                "enrichment": {
+                    "firstName": "Vasya",
+                    "lastName": "Ivanov"
+                }
+            }
+            """;
     private static final String ENRICHMENT_JSON_WITH_DIFFERENT_CLIENT =
-            "{\n" +
-                    "\"action\": \"button_click\",\n" +
-                    "\"page\": \"book_card\",\n" +
-                    "\"msisdn\": \"88005553535\",\n" +
-                    "\"enrichment\": {\n" +
-                    "\"firstName\": \"Darya\",\n" +
-                    "\"lastName\": \"Zayceva\"\n" +
-                    "}\n" +
-                    "}";
+            """
+            {
+                "action": "button_click",
+                "page": "book_card",
+                "msisdn": "88005553535",
+                "enrichment": {
+                    "firstName": "Darya",
+                    "lastName": "Zayceva"
+                }
+            }
+            """;
     private static final String JSON_WITH_UNKNOWN_CLIENT =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "\"msisdn\":\"84952313645\"\n" +
-                    "}";
+            """
+            {
+                "action":"button_click",
+                "page":"book_card",
+                "msisdn":"84952313645"
+            }
+            """;
     private static final String INVALID_JSON = "Invalid_Json";
-    private static final String JSON_WITHOUT_MSISDN =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "}";
-    private static EnrichmentService enrichmentServiceImpl;
-    private static ClientDao clientDao;
-
-    @BeforeAll
-    static void init() {
-        var middleware = Middleware.link(
-                new JSONFormatMiddleware(),
-                new JSONEnrichmentFieldMiddleware()
-        );
-        var messageValidator = new MessageValidatorImpl(middleware);
-        var mapper = new ObjectMapper();
-        var messageMarshaller = new JSONMarshaller(mapper);
-
-        clientDao = new ClientDaoImpl();
-        clientDao.save(88005553535L, new Client("Vasya", "Ivanov"));
-        enrichmentServiceImpl = new EnrichmentServiceImpl(
-                messageMarshaller,
-                messageValidator,
-                clientDao
-        );
-    }
+    private static MessageMarshaller messageMarshaller = mock(MessageMarshaller.class);
+    private static MessageValidator messageValidator = mock(MessageValidator.class);
+    private static ClientDao clientDao = mock(ClientDao.class);
+    private static EnrichmentService enrichmentService = new EnrichmentServiceImpl(
+            messageMarshaller,
+            messageValidator,
+            clientDao
+    );
 
     @Test
-    public void shouldReturnEnrichmentJsonWhenValidJson() throws JSONException {
+    public void shouldReturnEnrichmentMessageWhenValidMessage() {
         var message = new Message(VALID_JSON, EnrichmentType.MSISDN);
+        var marshalledMessageMap = new HashMap<String, Object>();
+        marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
+        marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
+        marshalledMessageMap.put(MSISDN_KEY, MSISDN_VALUE);
 
-        var result = enrichmentServiceImpl.enrich(message);
+        when(messageValidator.isValid(message)).thenReturn(true);
+        when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
+        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.of(CLIENT));
+        when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(ENRICHMENT_JSON);
 
-        JSONAssert.assertEquals(ENRICHMENT_JSON, result, JSONCompareMode.STRICT);
-        JSONAssert.assertEquals(ENRICHMENT_JSON, result, JSONCompareMode.LENIENT);
+        var result = enrichmentService.enrich(message);
+
+        assertEquals(ENRICHMENT_JSON, result);
     }
 
     @Test
-    public void shouldReturnSameResultWhenInvalidJson() throws JSONException {
+    public void shouldReturnSameResultWhenInvalidMessage() {
         var message = new Message(INVALID_JSON, EnrichmentType.MSISDN);
 
-        var result = enrichmentServiceImpl.enrich(message);
+        when(messageValidator.isValid(message)).thenReturn(false);
+        var result = enrichmentService.enrich(message);
 
-        JSONAssert.assertEquals(INVALID_JSON, result, JSONCompareMode.STRICT);
-        JSONAssert.assertEquals(INVALID_JSON, result, JSONCompareMode.LENIENT);
+        assertEquals(INVALID_JSON, result);
     }
 
     @Test
-    public void shouldReturnSameResultWhenJsonWithoutMsisdn() throws JSONException {
-        var message = new Message(JSON_WITHOUT_MSISDN, EnrichmentType.MSISDN);
-
-        var result = enrichmentServiceImpl.enrich(message);
-
-        JSONAssert.assertEquals(JSON_WITHOUT_MSISDN, result, JSONCompareMode.STRICT);
-        JSONAssert.assertEquals(JSON_WITHOUT_MSISDN, result, JSONCompareMode.LENIENT);
-    }
-
-    @Test
-    public void shouldReplaceEnrichmentFieldWhenClientDifferent() throws JSONException {
+    public void shouldReplaceEnrichmentFieldWhenClientDifferent() {
         var message = new Message(ENRICHMENT_JSON_WITH_DIFFERENT_CLIENT, EnrichmentType.MSISDN);
+        var marshalledMessageMap = new HashMap<String, Object>();
+        marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
+        marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
+        marshalledMessageMap.put(MSISDN_KEY, MSISDN_VALUE);
+        marshalledMessageMap.put(ENRICHMENT_KEY, UNKNOWN_CLIENT);
 
-        var result = enrichmentServiceImpl.enrich(message);
+        when(messageValidator.isValid(message)).thenReturn(true);
+        when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
+        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.of(CLIENT));
+        when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(ENRICHMENT_JSON);
 
-        JSONAssert.assertEquals(ENRICHMENT_JSON, result, JSONCompareMode.STRICT);
-        JSONAssert.assertEquals(ENRICHMENT_JSON, result, JSONCompareMode.LENIENT);
+        var result = enrichmentService.enrich(message);
+
+        assertEquals(ENRICHMENT_JSON, result);
     }
 
     @Test
-    public void shouldReturnSameMessageContentWhenClientUnknown() throws JSONException {
+    public void shouldReturnSameMessageContentWhenClientNotFound() {
         var message = new Message(JSON_WITH_UNKNOWN_CLIENT, EnrichmentType.MSISDN);
+        var marshalledMessageMap = new HashMap<String, Object>();
+        marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
+        marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
+        marshalledMessageMap.put(MSISDN_KEY, MSISDN_VALUE);
 
-        var result = enrichmentServiceImpl.enrich(message);
+        when(messageValidator.isValid(message)).thenReturn(true);
+        when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
+        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.empty());
+        when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(JSON_WITH_UNKNOWN_CLIENT);
 
-        JSONAssert.assertEquals(JSON_WITH_UNKNOWN_CLIENT, result, JSONCompareMode.STRICT);
-        JSONAssert.assertEquals(JSON_WITH_UNKNOWN_CLIENT, result, JSONCompareMode.LENIENT);
+        var result = enrichmentService.enrich(message);
+
+        assertEquals(JSON_WITH_UNKNOWN_CLIENT, result);
     }
 }
