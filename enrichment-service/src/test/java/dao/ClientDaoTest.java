@@ -3,81 +3,69 @@ package dao;
 import io.ayttekao.dao.ClientDao;
 import io.ayttekao.dao.ClientDaoImpl;
 import io.ayttekao.model.Client;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Random;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientDaoTest {
-    private static ClientDao clientDao;
+    private static final Long testId = new Random().nextLong();
+    private static final Client testClient = new Client("Elliot", "Alderson");
+    private ClientDao clientDao;
 
-    @BeforeAll
-    static void init() {
+    @BeforeEach
+    void initEach() {
         clientDao = new ClientDaoImpl();
     }
 
     @Test
     public void shouldFindClientWhenAdding() {
-        var id = new Random().nextLong();
-        var firstName = "Elliot";
-        var lastName = "Alderson";
-        var client = new Client(firstName, lastName);
+        clientDao.save(testId, testClient);
 
-        clientDao.save(id, client);
-
-        var clientFromDao = clientDao.findByMsisdn(id);
+        var clientFromDao = clientDao.findByMsisdn(testId);
 
         assertTrue(clientFromDao.isPresent());
-        assertEquals(firstName, clientFromDao.get().getFirstName());
-        assertEquals(lastName, clientFromDao.get().getLastName());
-        clientDao.deleteByMsisdn(id);
+        assertEquals(testClient.getFirstName(), clientFromDao.get().getFirstName());
+        assertEquals(testClient.getLastName(), clientFromDao.get().getLastName());
     }
 
     @Test
     public void shouldGetAll() {
         var countClient = 5;
         var idArray = new Random().longs(countClient, Long.MIN_VALUE, Long.MAX_VALUE).toArray();
-        var client = new Client("Elliot", "Alderson");
-
-        Arrays.stream(idArray).forEach(id -> clientDao.save(id, client));
+        Arrays.stream(idArray).forEach(id -> clientDao.save(id, testClient));
 
         var listClient = clientDao.getAll();
 
-        assertNotNull(listClient);
-        assertEquals(idArray.length, listClient.size());
-        Arrays.stream(idArray).forEach(id -> clientDao.deleteByMsisdn(id));
+        assertThat(listClient, hasSize(idArray.length));
     }
 
     @Test
     public void shouldChangeClientWhenUpdate() {
-        var id = new Random().nextLong();
-        var client = new Client("Elliot", "Alderson");
         var newFirstName = "Mr";
         var newLastName = "Robot";
 
-        clientDao.save(id, client);
-        clientDao.update(id, new Client(newFirstName, newLastName));
+        clientDao.save(testId, testClient);
+        clientDao.update(testId, new Client(newFirstName, newLastName));
 
-        var clientFromDao = clientDao.findByMsisdn(id);
+        var clientFromDao = clientDao.findByMsisdn(testId);
 
         assertTrue(clientFromDao.isPresent());
         assertEquals(newFirstName, clientFromDao.get().getFirstName());
         assertEquals(newLastName, clientFromDao.get().getLastName());
-        clientDao.deleteByMsisdn(id);
     }
 
     @Test
     public void shouldReturnEmptyClientWhenDeleted() {
-        var id = new Random().nextLong();
-        var client = new Client("Elliot", "Alderson");
+        clientDao.save(testId, testClient);
+        clientDao.deleteByMsisdn(testId);
 
-        clientDao.save(id, client);
-        clientDao.deleteByMsisdn(id);
-
-        var clientFromDao = clientDao.findByMsisdn(id);
+        var clientFromDao = clientDao.findByMsisdn(testId);
 
         assertTrue(clientFromDao.isEmpty());
     }
