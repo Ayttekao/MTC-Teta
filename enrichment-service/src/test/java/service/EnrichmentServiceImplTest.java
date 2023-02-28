@@ -5,6 +5,8 @@ import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
 import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
+import io.ayttekao.repository.MessageRepository;
+import io.ayttekao.repository.MessageRepositoryImpl;
 import io.ayttekao.service.EnrichmentService;
 import io.ayttekao.service.EnrichmentServiceImpl;
 import io.ayttekao.validator.MessageValidator;
@@ -71,10 +73,13 @@ public class EnrichmentServiceImplTest {
     private static MessageMarshaller messageMarshaller = mock(MessageMarshaller.class);
     private static MessageValidator messageValidator = mock(MessageValidator.class);
     private static ClientDao clientDao = mock(ClientDao.class);
+    private static MessageRepository messageRepository = mock(MessageRepositoryImpl.class);
     private static EnrichmentService enrichmentService = new EnrichmentServiceImpl(
             messageMarshaller,
             messageValidator,
-            clientDao
+            clientDao,
+            messageRepository,
+            messageRepository
     );
 
     @Test
