@@ -11,11 +11,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JSONMarshaller implements MessageMarshaller {
     private final ObjectMapper mapper;
+    TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
 
     @Override
     public HashMap<String, Object> marshall(String message) {
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
-
         try {
             return mapper.readValue(message, typeRef);
         } catch (JsonProcessingException e) {

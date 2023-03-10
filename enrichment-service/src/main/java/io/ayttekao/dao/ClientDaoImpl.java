@@ -23,24 +23,28 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void save(Long msisdn, Client client) {
+        if (clients.containsKey(msisdn)) {
+            throw new IllegalArgumentException("Client with the same MSISDN already exists");
+        }
+
         clients.put(msisdn, client);
     }
 
     @Override
     public void update(Long msisdn, Client client) {
-        var updatedClient = clients.replace(msisdn, client);
-
-        if (updatedClient == null) {
+        if (!clients.containsKey(msisdn)) {
             throw new NoSuchElementException("Client not found");
         }
+
+        clients.replace(msisdn, client);
     }
 
     @Override
     public void deleteByMsisdn(Long msisdn) {
-        var removedClient = clients.remove(msisdn);
-
-        if (removedClient == null) {
+        if (!clients.containsKey(msisdn)) {
             throw new NoSuchElementException("Client not found");
         }
+
+        clients.remove(msisdn);
     }
 }

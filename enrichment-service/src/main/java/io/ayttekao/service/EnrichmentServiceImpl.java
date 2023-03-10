@@ -18,13 +18,14 @@ public class EnrichmentServiceImpl implements EnrichmentService {
 
     @Override
     public String enrich(Message message) {
-        String response;
+        var response = message.getContent();
 
         if (validator.isValid(message)) {
             var marshalledMessageMap = messageMarshaller.marshall(message.getContent());
             marshalledMessageMap.remove(ENRICHMENT_KEY);
-            var msisdn = marshalledMessageMap.get(message.getEnrichmentType().toString());
-            clientDao.findByMsisdn(Long.valueOf(msisdn.toString())).ifPresent(
+            var enrichmentType = message.getEnrichmentType().toString();
+            var msisdn = marshalledMessageMap.get(enrichmentType);
+            clientDao.findByMsisdn(Long.valueOf((String) msisdn)).ifPresent(
                     theUser -> marshalledMessageMap.put(ENRICHMENT_KEY, theUser
                     )
             );
@@ -32,7 +33,6 @@ public class EnrichmentServiceImpl implements EnrichmentService {
             response = messageMarshaller.unmarshall(marshalledMessageMap);
             enrichedMessages.save(new Message(response, message.getEnrichmentType()));
         } else {
-            response = message.getContent();
             nonEnrichedMessages.save(message);
         }
 
