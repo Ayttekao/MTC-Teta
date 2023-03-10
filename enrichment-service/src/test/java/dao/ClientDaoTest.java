@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,6 +69,22 @@ public class ClientDaoTest {
         var clientFromDao = clientDao.findByMsisdn(testId);
 
         assertTrue(clientFromDao.isEmpty());
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionWhenDuplicateId() {
+        clientDao.save(testId, testClient);
+        assertThrows(IllegalArgumentException.class, () -> clientDao.save(testId, testClient));
+    }
+
+    @Test
+    void shouldThrowNoSuchElementExceptionWhenNonexistentClientUpdate() {
+        assertThrows(NoSuchElementException.class, () -> clientDao.update(testId, testClient));
+    }
+
+    @Test
+    void shouldThrowNoSuchElementExceptionWhenNonexistentClientDelete() {
+        assertThrows(NoSuchElementException.class, () -> clientDao.deleteByMsisdn(testId));
     }
 
 }
