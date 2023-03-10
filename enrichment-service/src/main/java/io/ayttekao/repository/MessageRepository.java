@@ -2,10 +2,10 @@ package io.ayttekao.repository;
 
 import io.ayttekao.model.Message;
 
-import java.util.Iterator;
+import java.util.List;
 
 public interface MessageRepository {
     void save(Message message);
 
-    Iterator<Message> getAll();
+    List<Message> getAll();
 }

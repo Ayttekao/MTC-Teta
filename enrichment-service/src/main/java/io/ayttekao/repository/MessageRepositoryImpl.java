@@ -3,20 +3,20 @@ package io.ayttekao.repository;
 import io.ayttekao.model.Message;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class MessageRepositoryImpl implements MessageRepository {
-    private final CopyOnWriteArrayList<Message> copyOnWriteArrayList;
+    private final List<Message> messages;
 
     @Override
-    public void save(Message message) {
-        copyOnWriteArrayList.add(message);
+    public synchronized void save(Message message) {
+        messages.add(message);
     }
 
     @Override
-    public Iterator<Message> getAll() {
-        return copyOnWriteArrayList.iterator();
+    public synchronized List<Message> getAll() {
+        return new ArrayList<>(messages);
     }
 }
