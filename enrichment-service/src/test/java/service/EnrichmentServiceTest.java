@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class EnrichmentServiceImplTest {
+public class EnrichmentServiceTest {
     private static final String ACTION_KEY = "action";
     private static final String PAGE_KEY = "page";
     private static final String MSISDN_KEY = "msisdn";
