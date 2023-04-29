@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientDaoImpl implements ClientDao {
-    private final ConcurrentHashMap<Long, Client> clients = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<Client> findByMsisdn(Long msisdn) {
+    public Optional<Client> findByMsisdn(String msisdn) {
         return Optional.ofNullable(clients.get(msisdn));
     }
 
@@ -22,7 +22,7 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public void save(Long msisdn, Client client) {
+    public void save(String msisdn, Client client) {
         if (clients.containsKey(msisdn)) {
             throw new IllegalArgumentException("Client with the same MSISDN already exists");
         }
@@ -31,7 +31,7 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public void update(Long msisdn, Client client) {
+    public void update(String msisdn, Client client) {
         if (!clients.containsKey(msisdn)) {
             throw new NoSuchElementException("Client not found");
         }
@@ -40,7 +40,7 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public void deleteByMsisdn(Long msisdn) {
+    public void deleteByMsisdn(String msisdn) {
         if (!clients.containsKey(msisdn)) {
             throw new NoSuchElementException("Client not found");
         }

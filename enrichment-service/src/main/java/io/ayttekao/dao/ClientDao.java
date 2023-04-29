@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClientDao {
-    Optional<Client> findByMsisdn(Long msisdn);
+    Optional<Client> findByMsisdn(String msisdn);
 
     List<Client> getAll();
 
-    void save(Long msisdn, Client client);
+    void save(String msisdn, Client client);
 
-    void update(Long msisdn, Client client);
+    void update(String msisdn, Client client);
 
-    void deleteByMsisdn(Long msisdn);
+    void deleteByMsisdn(String msisdn);
 }

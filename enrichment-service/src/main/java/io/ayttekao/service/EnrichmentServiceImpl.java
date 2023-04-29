@@ -25,7 +25,7 @@ public class EnrichmentServiceImpl implements EnrichmentService {
             marshalledMessageMap.remove(ENRICHMENT_KEY);
             var enrichmentType = message.getEnrichmentType().toString();
             var msisdn = marshalledMessageMap.get(enrichmentType);
-            clientDao.findByMsisdn(Long.valueOf((String) msisdn)).ifPresent(
+            clientDao.findByMsisdn(msisdn.toString()).ifPresent(
                     theUser -> marshalledMessageMap.put(ENRICHMENT_KEY, theUser
                     )
             );

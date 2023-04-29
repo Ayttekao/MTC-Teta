@@ -70,11 +70,11 @@ public class EnrichmentServiceImplTest {
             }
             """;
     private static final String INVALID_JSON = "Invalid_Json";
-    private static MessageMarshaller messageMarshaller = mock(MessageMarshaller.class);
-    private static MessageValidator messageValidator = mock(MessageValidator.class);
-    private static ClientDao clientDao = mock(ClientDao.class);
-    private static MessageRepository messageRepository = mock(MessageRepositoryImpl.class);
-    private static EnrichmentService enrichmentService = new EnrichmentServiceImpl(
+    private static final MessageMarshaller messageMarshaller = mock(MessageMarshaller.class);
+    private static final MessageValidator messageValidator = mock(MessageValidator.class);
+    private static final ClientDao clientDao = mock(ClientDao.class);
+    private static final MessageRepository messageRepository = mock(MessageRepositoryImpl.class);
+    private static final EnrichmentService enrichmentService = new EnrichmentServiceImpl(
             messageMarshaller,
             messageValidator,
             clientDao,
@@ -92,7 +92,7 @@ public class EnrichmentServiceImplTest {
 
         when(messageValidator.isValid(message)).thenReturn(true);
         when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
-        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.of(CLIENT));
+        when(clientDao.findByMsisdn(MSISDN_VALUE)).thenReturn(Optional.of(CLIENT));
         when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(ENRICHMENT_JSON);
 
         var result = enrichmentService.enrich(message);
@@ -121,7 +121,7 @@ public class EnrichmentServiceImplTest {
 
         when(messageValidator.isValid(message)).thenReturn(true);
         when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
-        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.of(CLIENT));
+        when(clientDao.findByMsisdn(MSISDN_VALUE)).thenReturn(Optional.of(CLIENT));
         when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(ENRICHMENT_JSON);
 
         var result = enrichmentService.enrich(message);
@@ -139,7 +139,7 @@ public class EnrichmentServiceImplTest {
 
         when(messageValidator.isValid(message)).thenReturn(true);
         when(messageMarshaller.marshall(message.getContent())).thenReturn(marshalledMessageMap);
-        when(clientDao.findByMsisdn(Long.valueOf(MSISDN_VALUE))).thenReturn(Optional.empty());
+        when(clientDao.findByMsisdn(MSISDN_VALUE)).thenReturn(Optional.empty());
         when(messageMarshaller.unmarshall(marshalledMessageMap)).thenReturn(JSON_WITH_UNKNOWN_CLIENT);
 
         var result = enrichmentService.enrich(message);
