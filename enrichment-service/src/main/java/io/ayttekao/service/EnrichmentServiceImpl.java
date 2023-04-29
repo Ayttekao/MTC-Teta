@@ -1,6 +1,6 @@
 package io.ayttekao.service;
 
-import io.ayttekao.dao.ClientDao;
+import io.ayttekao.repository.ClientRepository;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Message;
 import io.ayttekao.repository.MessageRepository;
@@ -12,7 +12,7 @@ public class EnrichmentServiceImpl implements EnrichmentService {
     private static final String ENRICHMENT_KEY = "enrichment";
     private final MessageMarshaller messageMarshaller;
     private final MessageValidator validator;
-    private final ClientDao clientDao;
+    private final ClientRepository clientRepository;
     private final MessageRepository enrichedMessages;
     private final MessageRepository nonEnrichedMessages;
 
@@ -25,7 +25,7 @@ public class EnrichmentServiceImpl implements EnrichmentService {
             marshalledMessageMap.remove(ENRICHMENT_KEY);
             var enrichmentType = message.getEnrichmentType().toString();
             var msisdn = marshalledMessageMap.get(enrichmentType);
-            clientDao.findByMsisdn(msisdn.toString()).ifPresent(
+            clientRepository.findByMsisdn(msisdn.toString()).ifPresent(
                     theUser -> marshalledMessageMap.put(ENRICHMENT_KEY, theUser
                     )
             );

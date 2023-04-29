@@ -1,4 +1,4 @@
-package io.ayttekao.dao;
+package io.ayttekao.repository;
 
 import io.ayttekao.model.Client;
 
@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClientDaoImpl implements ClientDao {
+public class ClientRepositoryImpl implements ClientRepository {
     private final ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<>();
 
     @Override

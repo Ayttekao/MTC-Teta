@@ -1,8 +1,8 @@
 package service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.ayttekao.dao.ClientDao;
-import io.ayttekao.dao.ClientDaoImpl;
+import io.ayttekao.repository.ClientRepository;
+import io.ayttekao.repository.ClientRepositoryImpl;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
@@ -40,7 +40,7 @@ public class MultiThreadEnrichmentServiceTest {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final MessageMarshaller messageMarshaller = new JSONMarshaller(mapper);
     private static final MessageValidator validator = new MessageValidatorImpl(middleware);
-    private static final ClientDao clientDao = new ClientDaoImpl();
+    private static final ClientRepository CLIENT_REPOSITORY = new ClientRepositoryImpl();
     private static final MessageRepository enrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
     private static final MessageRepository nonEnrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
 
@@ -58,7 +58,7 @@ public class MultiThreadEnrichmentServiceTest {
             var msisdn = randomDigitString(11);
             var message = generateMessage(msisdn, EnrichmentType.MSISDN);
             var client = new Client(randomDigitString(8), randomDigitString(8));
-            clientDao.save(msisdn, client);
+            CLIENT_REPOSITORY.save(msisdn, client);
             futures.add(executorService.submit(() -> services.get(index).enrich(message)));
         }
 
@@ -79,7 +79,7 @@ public class MultiThreadEnrichmentServiceTest {
         return new EnrichmentServiceImpl(
                 messageMarshaller,
                 validator,
-                clientDao,
+                CLIENT_REPOSITORY,
                 enrichedMessages,
                 nonEnrichedMessages
         );

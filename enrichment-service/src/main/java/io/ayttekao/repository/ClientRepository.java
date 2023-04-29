@@ -1,11 +1,11 @@
-package io.ayttekao.dao;
+package io.ayttekao.repository;
 
 import io.ayttekao.model.Client;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ClientDao {
+public interface ClientRepository {
     Optional<Client> findByMsisdn(String msisdn);
 
     List<Client> getAll();

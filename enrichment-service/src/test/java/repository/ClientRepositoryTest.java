@@ -1,7 +1,7 @@
-package dao;
+package repository;
 
-import io.ayttekao.dao.ClientDao;
-import io.ayttekao.dao.ClientDaoImpl;
+import io.ayttekao.repository.ClientRepository;
+import io.ayttekao.repository.ClientRepositoryImpl;
 import io.ayttekao.model.Client;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,21 +15,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientDaoTest {
+public class ClientRepositoryTest {
     private static final String testMsisdn = randomDigitString(11);
     private static final Client testClient = new Client("Elliot", "Alderson");
-    private ClientDao clientDao;
+    private ClientRepository clientRepository;
 
     @BeforeEach
     void initEach() {
-        clientDao = new ClientDaoImpl();
+        clientRepository = new ClientRepositoryImpl();
     }
 
     @Test
     public void shouldFindClientWhenAdding() {
-        clientDao.save(testMsisdn, testClient);
+        clientRepository.save(testMsisdn, testClient);
 
-        var clientFromDao = clientDao.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
 
         assertTrue(clientFromDao.isPresent());
         assertEquals(testClient.getFirstName(), clientFromDao.get().getFirstName());
@@ -46,9 +46,9 @@ public class ClientDaoTest {
                         .collect(Collectors.joining()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        list.forEach(id -> clientDao.save(id, testClient));
+        list.forEach(id -> clientRepository.save(id, testClient));
 
-        var listClient = clientDao.getAll();
+        var listClient = clientRepository.getAll();
 
         assertThat(listClient, hasSize(list.size()));
     }
@@ -58,10 +58,10 @@ public class ClientDaoTest {
         var newFirstName = "Mr";
         var newLastName = "Robot";
 
-        clientDao.save(testMsisdn, testClient);
-        clientDao.update(testMsisdn, new Client(newFirstName, newLastName));
+        clientRepository.save(testMsisdn, testClient);
+        clientRepository.update(testMsisdn, new Client(newFirstName, newLastName));
 
-        var clientFromDao = clientDao.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
 
         assertTrue(clientFromDao.isPresent());
         assertEquals(newFirstName, clientFromDao.get().getFirstName());
@@ -70,28 +70,28 @@ public class ClientDaoTest {
 
     @Test
     public void shouldReturnEmptyClientWhenDeleted() {
-        clientDao.save(testMsisdn, testClient);
-        clientDao.deleteByMsisdn(testMsisdn);
+        clientRepository.save(testMsisdn, testClient);
+        clientRepository.deleteByMsisdn(testMsisdn);
 
-        var clientFromDao = clientDao.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
 
         assertTrue(clientFromDao.isEmpty());
     }
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenDuplicateId() {
-        clientDao.save(testMsisdn, testClient);
-        assertThrows(IllegalArgumentException.class, () -> clientDao.save(testMsisdn, testClient));
+        clientRepository.save(testMsisdn, testClient);
+        assertThrows(IllegalArgumentException.class, () -> clientRepository.save(testMsisdn, testClient));
     }
 
     @Test
     void shouldThrowNoSuchElementExceptionWhenNonexistentClientUpdate() {
-        assertThrows(NoSuchElementException.class, () -> clientDao.update(testMsisdn, testClient));
+        assertThrows(NoSuchElementException.class, () -> clientRepository.update(testMsisdn, testClient));
     }
 
     @Test
     void shouldThrowNoSuchElementExceptionWhenNonexistentClientDelete() {
-        assertThrows(NoSuchElementException.class, () -> clientDao.deleteByMsisdn(testMsisdn));
+        assertThrows(NoSuchElementException.class, () -> clientRepository.deleteByMsisdn(testMsisdn));
     }
 
     private static String randomDigitString(Integer targetStringLength) {
