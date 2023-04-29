@@ -31,9 +31,9 @@ public class EnrichmentServiceImpl implements EnrichmentService {
             );
 
             response = messageMarshaller.unmarshall(marshalledMessageMap);
-            enrichedMessages.save(new Message(response, message.getEnrichmentType()));
+            enrichedMessages.add(new Message(response, message.getEnrichmentType()));
         } else {
-            nonEnrichedMessages.save(message);
+            nonEnrichedMessages.add(message);
         }
 
         return response;
