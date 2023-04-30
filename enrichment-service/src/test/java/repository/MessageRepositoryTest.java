@@ -6,7 +6,6 @@ import io.ayttekao.repository.MessageRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Predicate;
 
@@ -22,37 +21,36 @@ public class MessageRepositoryTest {
 
     @Test
     public void ShouldAddMessageToRepository() {
-        Message message = new Message("Hello World!", EnrichmentType.MSISDN);
+        var message = new Message("Hello World!", EnrichmentType.MSISDN);
 
         messageRepository.add(message);
 
-        List<Message> allMessages = messageRepository.getAll();
+        var allMessages = messageRepository.getAll();
         assertTrue(allMessages.contains(message));
     }
 
     @Test
     public void ShouldRemoveMessageFromRepository() {
-        Message message = new Message("Hello World!", EnrichmentType.MSISDN);
+        var message = new Message("Hello World!", EnrichmentType.MSISDN);
         messageRepository.add(message);
 
         messageRepository.remove(message);
 
-        List<Message> allMessages = messageRepository.getAll();
+        var allMessages = messageRepository.getAll();
         assertTrue(allMessages.isEmpty());
     }
 
     @Test
     public void ShouldQueryMessagesFromRepositoryWithGivenFilter() {
-        MessageRepositoryImpl repository = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
-        Message message1 = new Message("Hello World!", EnrichmentType.MSISDN);
-        Message message2 = new Message("Hi there!", EnrichmentType.MSISDN);
-        repository.add(message1);
-        repository.add(message2);
-        Predicate<Message> filter = m -> m.getContent().equals("Hi there!");
+        var helloMessage = new Message("Hello", EnrichmentType.MSISDN);
+        var hiMessage = new Message("Hi", EnrichmentType.MSISDN);
+        messageRepository.add(helloMessage);
+        messageRepository.add(hiMessage);
+        Predicate<Message> filter = message -> message.getContent().equals("Hi");
 
-        List<Message> result = repository.query(filter);
+        var result = messageRepository.query(filter);
 
-        assertTrue(result.contains(message2));
+        assertTrue(result.contains(hiMessage));
     }
 
     @Test
@@ -63,7 +61,7 @@ public class MessageRepositoryTest {
         messageRepository.add(helloMessage);
         messageRepository.add(hiMessage);
 
-        List<Message> allMessages = messageRepository.getAll();
+        var allMessages = messageRepository.getAll();
 
         assertTrue(allMessages.contains(helloMessage));
         assertTrue(allMessages.contains(hiMessage));
