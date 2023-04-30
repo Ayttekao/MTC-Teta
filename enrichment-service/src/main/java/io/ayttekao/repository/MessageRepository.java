@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public interface MessageRepository {
     void add(Message message);
 
-    Boolean remove(Message message);
+    void remove(Message message);
 
     List<Message> query(Predicate<Message> filter);
 

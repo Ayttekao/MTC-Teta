@@ -16,8 +16,8 @@ public class MessageRepositoryImpl implements MessageRepository {
         messages.add(message);
     }
 
-    public Boolean remove(Message message) {
-        return messages.remove(message);
+    public void remove(Message message) {
+        messages.remove(message);
     }
 
     public List<Message> query(Predicate<Message> filter) {
