@@ -11,16 +11,16 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MessageRepositoryTest {
+class MessageRepositoryTest {
     private MessageRepositoryImpl messageRepository;
 
     @BeforeEach
-    public void setUp() {
+    public void beforeEach() {
         messageRepository = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
     }
 
     @Test
-    public void ShouldAddMessageToRepository() {
+    void ShouldAddMessageToRepository() {
         var message = new Message("Hello World!", EnrichmentType.MSISDN);
 
         messageRepository.add(message);
@@ -30,7 +30,7 @@ public class MessageRepositoryTest {
     }
 
     @Test
-    public void ShouldRemoveMessageFromRepository() {
+    void ShouldRemoveMessageFromRepository() {
         var message = new Message("Hello World!", EnrichmentType.MSISDN);
         messageRepository.add(message);
 
@@ -41,7 +41,7 @@ public class MessageRepositoryTest {
     }
 
     @Test
-    public void ShouldQueryMessagesFromRepositoryWithGivenFilter() {
+    void ShouldQueryMessagesFromRepositoryWithGivenFilter() {
         var helloMessage = new Message("Hello", EnrichmentType.MSISDN);
         var hiMessage = new Message("Hi", EnrichmentType.MSISDN);
         messageRepository.add(helloMessage);
@@ -54,7 +54,7 @@ public class MessageRepositoryTest {
     }
 
     @Test
-    public void ShouldGetAllMessageFromRepository() {
+    void ShouldGetAllMessageFromRepository() {
         var helloMessage = new Message("Hello", EnrichmentType.MSISDN);
         var hiMessage = new Message("Hi", EnrichmentType.MSISDN);
 

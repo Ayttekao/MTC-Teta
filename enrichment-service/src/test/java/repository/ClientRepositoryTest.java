@@ -11,33 +11,34 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static Utils.RandomTestUtils.randomString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientRepositoryTest {
-    private static final String testMsisdn = randomDigitString(11);
-    private static final Client testClient = new Client("Elliot", "Alderson");
+class ClientRepositoryTest {
+    private static final String TEST_MSISDN = randomString(11, false, true);
+    private static final Client TEST_CLIENT = new Client("Elliot", "Alderson");
     private ClientRepository clientRepository;
 
     @BeforeEach
-    void initEach() {
+    void beforeEach() {
         clientRepository = new ClientRepositoryImpl();
     }
 
     @Test
-    public void shouldFindClientWhenAdding() {
-        clientRepository.save(testMsisdn, testClient);
+    void shouldFindClientWhenAdding() {
+        clientRepository.save(TEST_MSISDN, TEST_CLIENT);
 
-        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(TEST_MSISDN);
 
         assertTrue(clientFromDao.isPresent());
-        assertEquals(testClient.getFirstName(), clientFromDao.get().getFirstName());
-        assertEquals(testClient.getLastName(), clientFromDao.get().getLastName());
+        assertEquals(TEST_CLIENT.getFirstName(), clientFromDao.get().getFirstName());
+        assertEquals(TEST_CLIENT.getLastName(), clientFromDao.get().getLastName());
     }
 
     @Test
-    public void shouldGetAll() {
+    void shouldGetAll() {
         var countClient = 20;
         var random = new Random();
         var list = random.ints(countClient, 0, 10)
@@ -46,7 +47,7 @@ public class ClientRepositoryTest {
                         .collect(Collectors.joining()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        list.forEach(id -> clientRepository.save(id, testClient));
+        list.forEach(id -> clientRepository.save(id, TEST_CLIENT));
 
         var listClient = clientRepository.getAll();
 
@@ -54,14 +55,14 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void shouldChangeClientWhenUpdate() {
+    void shouldChangeClientWhenUpdate() {
         var newFirstName = "Mr";
         var newLastName = "Robot";
 
-        clientRepository.save(testMsisdn, testClient);
-        clientRepository.update(testMsisdn, new Client(newFirstName, newLastName));
+        clientRepository.save(TEST_MSISDN, TEST_CLIENT);
+        clientRepository.update(TEST_MSISDN, new Client(newFirstName, newLastName));
 
-        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(TEST_MSISDN);
 
         assertTrue(clientFromDao.isPresent());
         assertEquals(newFirstName, clientFromDao.get().getFirstName());
@@ -69,40 +70,29 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void shouldReturnEmptyClientWhenDeleted() {
-        clientRepository.save(testMsisdn, testClient);
-        clientRepository.deleteByMsisdn(testMsisdn);
+    void shouldReturnEmptyClientWhenDeleted() {
+        clientRepository.save(TEST_MSISDN, TEST_CLIENT);
+        clientRepository.deleteByMsisdn(TEST_MSISDN);
 
-        var clientFromDao = clientRepository.findByMsisdn(testMsisdn);
+        var clientFromDao = clientRepository.findByMsisdn(TEST_MSISDN);
 
         assertTrue(clientFromDao.isEmpty());
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionWhenDuplicateId() {
-        clientRepository.save(testMsisdn, testClient);
-        assertThrows(IllegalArgumentException.class, () -> clientRepository.save(testMsisdn, testClient));
+    void shouldThrowIllegalArgumentExceptionWhenDuplicateId() {
+        clientRepository.save(TEST_MSISDN, TEST_CLIENT);
+        assertThrows(IllegalArgumentException.class, () -> clientRepository.save(TEST_MSISDN, TEST_CLIENT));
     }
 
     @Test
     void shouldThrowNoSuchElementExceptionWhenNonexistentClientUpdate() {
-        assertThrows(NoSuchElementException.class, () -> clientRepository.update(testMsisdn, testClient));
+        assertThrows(NoSuchElementException.class, () -> clientRepository.update(TEST_MSISDN, TEST_CLIENT));
     }
 
     @Test
     void shouldThrowNoSuchElementExceptionWhenNonexistentClientDelete() {
-        assertThrows(NoSuchElementException.class, () -> clientRepository.deleteByMsisdn(testMsisdn));
-    }
-
-    private static String randomDigitString(Integer targetStringLength) {
-        int leftLimit = '0';
-        int rightLimit = '9';
-        Random random = new Random();
-
-        return random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+        assertThrows(NoSuchElementException.class, () -> clientRepository.deleteByMsisdn(TEST_MSISDN));
     }
 }
 

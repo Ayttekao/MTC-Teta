@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class EnrichmentServiceTest {
+class EnrichmentServiceTest {
     private static final String ACTION_KEY = "action";
     private static final String PAGE_KEY = "page";
     private static final String MSISDN_KEY = "msisdn";
@@ -83,7 +83,7 @@ public class EnrichmentServiceTest {
     );
 
     @Test
-    public void shouldReturnEnrichmentMessageWhenValidMessage() {
+    void shouldReturnEnrichmentMessageWhenValidMessage() {
         var message = new Message(VALID_JSON, EnrichmentType.MSISDN);
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
@@ -101,7 +101,7 @@ public class EnrichmentServiceTest {
     }
 
     @Test
-    public void shouldReturnSameResultWhenInvalidMessage() {
+    void shouldReturnSameResultWhenInvalidMessage() {
         var message = new Message(INVALID_JSON, EnrichmentType.MSISDN);
 
         when(messageValidator.isValid(message)).thenReturn(false);
@@ -111,7 +111,7 @@ public class EnrichmentServiceTest {
     }
 
     @Test
-    public void shouldReplaceEnrichmentFieldWhenClientDifferent() {
+    void shouldReplaceEnrichmentFieldWhenClientDifferent() {
         var message = new Message(ENRICHMENT_JSON_WITH_DIFFERENT_CLIENT, EnrichmentType.MSISDN);
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
@@ -130,7 +130,7 @@ public class EnrichmentServiceTest {
     }
 
     @Test
-    public void shouldReturnSameMessageContentWhenClientNotFound() {
+    void shouldReturnSameMessageContentWhenClientNotFound() {
         var message = new Message(JSON_WITH_UNKNOWN_CLIENT, EnrichmentType.MSISDN);
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);

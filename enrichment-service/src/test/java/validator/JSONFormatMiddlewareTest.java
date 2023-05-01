@@ -10,25 +10,26 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JSONFormatMiddlewareTest {
-    private static final String VALID_JSON =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "\"msisdn\":\"88005553535\"\n" +
-                    "}";
+class JSONFormatMiddlewareTest {
+    private static final String VALID_JSON = """
+            {
+            "action":"button_click",
+            "page":"book_card",
+            "msisdn":"88005553535"
+            }
+            """;
     private static final String INVALID_JSON = "Invalid_Json";
     private static Middleware jsonFormatMiddleware;
 
     @BeforeAll
-    static void init() {
+    static void beforeAll() {
         jsonFormatMiddleware = Middleware.link(
                 new JSONFormatMiddleware()
         );
     }
 
     @Test
-    public void shouldTruedWhenValidJson() {
+    void shouldTruedWhenValidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(VALID_JSON, enrichment);
 
@@ -36,7 +37,7 @@ public class JSONFormatMiddlewareTest {
     }
 
     @Test
-    public void shouldFalseWhenInvalidJson() {
+    void shouldFalseWhenInvalidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(INVALID_JSON, enrichment);
 

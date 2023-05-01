@@ -1,13 +1,13 @@
 package service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.ayttekao.repository.ClientRepository;
-import io.ayttekao.repository.ClientRepositoryImpl;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
 import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
+import io.ayttekao.repository.ClientRepository;
+import io.ayttekao.repository.ClientRepositoryImpl;
 import io.ayttekao.repository.MessageRepository;
 import io.ayttekao.repository.MessageRepositoryImpl;
 import io.ayttekao.service.EnrichmentService;
@@ -21,17 +21,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static Utils.RandomTestUtils.randomString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultiThreadEnrichmentServiceTest {
+class MultiThreadEnrichmentServiceTest {
     private static final Random random = new Random();
     private static final Middleware middleware = Middleware.link(
             new JSONFormatMiddleware(),
@@ -40,31 +38,28 @@ public class MultiThreadEnrichmentServiceTest {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final MessageMarshaller messageMarshaller = new JSONMarshaller(mapper);
     private static final MessageValidator validator = new MessageValidatorImpl(middleware);
-    private static final ClientRepository CLIENT_REPOSITORY = new ClientRepositoryImpl();
+    private static final ClientRepository clientRepository = new ClientRepositoryImpl();
     private static final MessageRepository enrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
     private static final MessageRepository nonEnrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
 
     @Test
-    public void shouldEnrichMessageInMultiThreadedEnvironment() throws InterruptedException, ExecutionException {
-        var services = IntStream.range(0, 10)
-                .mapToObj(i -> createEnrichmentService())
-                .toList();
+    void shouldEnrichMessageInMultiThreadedEnvironment() {
+        var service = createEnrichmentService();
 
-        var executorService = Executors.newFixedThreadPool(10);
-        var futures = new ArrayList<Future<String>>();
+        var executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        var completableFutures = new ArrayList<CompletableFuture<String>>();
 
         for (var i = 0; i < 1000; i++) {
-            int index = i % 10;
-            var msisdn = randomDigitString(11);
+            var msisdn = randomString(11, false, true);
             var message = generateMessage(msisdn, EnrichmentType.MSISDN);
-            var client = new Client(randomDigitString(8), randomDigitString(8));
-            CLIENT_REPOSITORY.save(msisdn, client);
-            futures.add(executorService.submit(() -> services.get(index).enrich(message)));
+            var client = new Client(randomString(), randomString());
+            clientRepository.save(msisdn, client);
+
+            CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> service.enrich(message), executorService);
+            completableFutures.add(future);
         }
 
-        for (Future<String> future : futures) {
-            future.get();
-        }
+        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).join();
 
         executorService.shutdown();
 
@@ -79,16 +74,10 @@ public class MultiThreadEnrichmentServiceTest {
         return new EnrichmentServiceImpl(
                 messageMarshaller,
                 validator,
-                CLIENT_REPOSITORY,
+                clientRepository,
                 enrichedMessages,
                 nonEnrichedMessages
         );
-    }
-
-    private static String randomDigitString(Integer targetStringLength) {
-        return random.ints(targetStringLength, 0, 10)
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining());
     }
 
     private Message generateMessage(String msisdn, EnrichmentType enrichmentType) {

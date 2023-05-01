@@ -3,6 +3,7 @@ package io.ayttekao.marshaller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.ayttekao.exception.MarshallException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class JSONMarshaller implements MessageMarshaller {
         try {
             return mapper.readValue(message, typeRef);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new MarshallException("Marshall process exception", e.getCause());
         }
     }
 
@@ -27,7 +28,7 @@ public class JSONMarshaller implements MessageMarshaller {
         try {
             return mapper.writeValueAsString(marshalledMessageMap);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new MarshallException("Unmarshall process exception", e.getCause());
         }
     }
 }

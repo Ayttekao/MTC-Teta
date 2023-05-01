@@ -10,30 +10,30 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JSONEnrichmentFieldMiddlewareTest {
-    private static final String VALID_JSON =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "\"msisdn\":\"88005553535\"\n" +
-                    "}";
-    private static final String INVALID_JSON =
-            "{\n" +
-                    "\"action\": \"button_click\",\n" +
-                    "\"page\": \"book_card\",\n" +
-                    "\"msisdn1\": \"88005553535\"\n" +
-                    "}";
+class JSONEnrichmentFieldMiddlewareTest {
+    private static final String VALID_JSON = """
+            {
+            "action":"button_click",
+            "page":"book_card",
+            "msisdn":"88005553535"
+            }""";
+    private static final String INVALID_JSON = """
+            {
+            "action": "button_click",
+            "page": "book_card",
+            "msisdn1": "88005553535"
+            }""";
     private static Middleware jsonFieldMiddleware;
 
     @BeforeAll
-    static void init() {
+    static void beforeAll() {
         jsonFieldMiddleware = Middleware.link(
                 new JSONEnrichmentFieldMiddleware()
         );
     }
 
     @Test
-    public void shouldTrueWhenValidJson() {
+    void shouldTrueWhenValidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(VALID_JSON, enrichment);
 
@@ -41,7 +41,7 @@ public class JSONEnrichmentFieldMiddlewareTest {
     }
 
     @Test
-    public void shouldFalseWhenInvalidJson() {
+    void shouldFalseWhenInvalidJson() {
         var enrichment = EnrichmentType.MSISDN;
         var validMessage = new Message(INVALID_JSON, enrichment);
 

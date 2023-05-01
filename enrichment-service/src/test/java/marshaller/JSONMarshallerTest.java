@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JSONMarshallerTest {
+class JSONMarshallerTest {
     private static final String ACTION_KEY = "action";
     private static final String PAGE_KEY = "page";
     private static final String MSISDN_KEY = "msisdn";
@@ -23,32 +23,32 @@ public class JSONMarshallerTest {
     private static final String PAGE_VALUE = "book_card";
     private static final String MSISDN_VALUE = "88005553535";
     private static final String ENRICHMENT_KEY = "enrichment";
-    private static final String VALID_JSON =
-            "{\n" +
-                    "\"action\":\"button_click\",\n" +
-                    "\"page\":\"book_card\",\n" +
-                    "\"msisdn\":\"88005553535\"\n" +
-                    "}";
-    private static final String ENRICHMENT_JSON =
-            "{\n" +
-                    "\"action\": \"button_click\",\n" +
-                    "\"page\": \"book_card\",\n" +
-                    "\"msisdn\": \"88005553535\",\n" +
-                    "\"enrichment\": {\n" +
-                    "\"firstName\": \"Vasya\",\n" +
-                    "\"lastName\": \"Ivanov\"\n" +
-                    "}\n" +
-                    "}";
+    private static final String VALID_JSON = """
+            {
+            "action":"button_click",
+            "page":"book_card",
+            "msisdn":"88005553535"
+            }""";
+    private static final String ENRICHMENT_JSON = """
+            {
+            "action": "button_click",
+            "page": "book_card",
+            "msisdn": "88005553535",
+            "enrichment": {
+            "firstName": "Vasya",
+            "lastName": "Ivanov"
+            }
+            }""";
     private static final String INVALID_JSON = "Invalid_Json";
     private static MessageMarshaller jsonMarshaller;
 
     @BeforeAll
-    static void init() {
+    static void beforeAll() {
         jsonMarshaller = new JSONMarshaller(new ObjectMapper());
     }
 
     @Test
-    public void shouldMarshallToMapWhenValidJson() {
+    void shouldMarshallToMapWhenValidJson() {
         var marshalledMessageMap = jsonMarshaller.marshall(VALID_JSON);
         var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY);
         var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
@@ -62,7 +62,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    public void shouldMarshallToMapWhenNestedJson() {
+    void shouldMarshallToMapWhenNestedJson() {
         var marshalledMessageMap = jsonMarshaller.marshall(ENRICHMENT_JSON);
         var keyList = Arrays.asList(ACTION_KEY, PAGE_KEY, MSISDN_KEY, ENRICHMENT_KEY);
         var valueList = Arrays.asList(ACTION_VALUE, PAGE_VALUE, MSISDN_VALUE);
@@ -76,7 +76,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenInvalidJson() {
+    void shouldThrowExceptionWhenInvalidJson() {
 
         var thrown = assertThrows(
                 RuntimeException.class, () -> jsonMarshaller.marshall(INVALID_JSON), "RuntimeException was expected"
@@ -86,7 +86,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    public void shouldUnmarshallMapToValidJson() throws JSONException {
+    void shouldUnmarshallMapToValidJson() throws JSONException {
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
         marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);
@@ -99,7 +99,7 @@ public class JSONMarshallerTest {
     }
 
     @Test
-    public void shouldUnmarshallMapToNestedJson() throws JSONException {
+    void shouldUnmarshallMapToNestedJson() throws JSONException {
         var marshalledMessageMap = new HashMap<String, Object>();
         marshalledMessageMap.put(ACTION_KEY, ACTION_VALUE);
         marshalledMessageMap.put(PAGE_KEY, PAGE_VALUE);

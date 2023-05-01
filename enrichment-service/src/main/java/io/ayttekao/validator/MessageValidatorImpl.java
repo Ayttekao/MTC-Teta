@@ -1,13 +1,11 @@
 package io.ayttekao.validator;
 
 import io.ayttekao.model.Message;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class MessageValidatorImpl implements MessageValidator {
-    private Middleware middleware;
-
-    public MessageValidatorImpl(Middleware middleware) {
-        this.middleware = middleware;
-    }
+    private final Middleware middleware;
 
     @Override
     public Boolean isValid(Message message) {
