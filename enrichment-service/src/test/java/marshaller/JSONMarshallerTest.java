@@ -1,6 +1,7 @@
 package marshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.ayttekao.exception.MarshallException;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
@@ -82,7 +83,7 @@ class JSONMarshallerTest {
                 RuntimeException.class, () -> jsonMarshaller.marshall(INVALID_JSON), "RuntimeException was expected"
         );
 
-        assertEquals(RuntimeException.class, thrown.getClass());
+        assertEquals(MarshallException.class, thrown.getClass());
     }
 
     @Test
