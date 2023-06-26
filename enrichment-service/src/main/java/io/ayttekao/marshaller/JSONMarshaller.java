@@ -11,13 +11,12 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class JSONMarshaller implements MessageMarshaller {
-    private final ObjectMapper mapper;
-    TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
-
-    @Override
+    private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<>() {};
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+     @Override
     public HashMap<String, Object> marshall(String message) {
         try {
-            return mapper.readValue(message, typeRef);
+            return MAPPER.readValue(message, TYPE_REF);
         } catch (JsonProcessingException e) {
             throw new MarshallException("Marshall process exception", e.getCause());
         }
@@ -26,7 +25,7 @@ public class JSONMarshaller implements MessageMarshaller {
     @Override
     public String unmarshall(Map<String, Object> marshalledMessageMap) {
         try {
-            return mapper.writeValueAsString(marshalledMessageMap);
+            return MAPPER.writeValueAsString(marshalledMessageMap);
         } catch (JsonProcessingException e) {
             throw new MarshallException("Unmarshall process exception", e.getCause());
         }

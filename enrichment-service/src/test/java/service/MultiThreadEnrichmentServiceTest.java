@@ -1,6 +1,5 @@
 package service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
 import io.ayttekao.model.Client;
@@ -35,8 +34,7 @@ class MultiThreadEnrichmentServiceTest {
             new JSONFormatMiddleware(),
             new JSONEnrichmentFieldMiddleware()
     );
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final MessageMarshaller messageMarshaller = new JSONMarshaller(mapper);
+    private static final MessageMarshaller messageMarshaller = new JSONMarshaller();
     private static final MessageValidator validator = new MessageValidatorImpl(middleware);
     private static final ClientRepository clientRepository = new ClientRepositoryImpl();
     private static final MessageRepository enrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());

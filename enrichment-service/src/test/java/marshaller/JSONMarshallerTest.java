@@ -1,6 +1,5 @@
 package marshaller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ayttekao.exception.MarshallException;
 import io.ayttekao.marshaller.JSONMarshaller;
 import io.ayttekao.marshaller.MessageMarshaller;
@@ -45,7 +44,7 @@ class JSONMarshallerTest {
 
     @BeforeAll
     static void beforeAll() {
-        jsonMarshaller = new JSONMarshaller(new ObjectMapper());
+        jsonMarshaller = new JSONMarshaller();
     }
 
     @Test
