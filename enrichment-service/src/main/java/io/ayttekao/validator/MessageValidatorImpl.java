@@ -8,7 +8,7 @@ public class MessageValidatorImpl implements MessageValidator {
     private final Middleware middleware;
 
     @Override
-    public Boolean isValid(Message message) {
+    public boolean isValid(Message message) {
         return middleware.check(message);
     }
 

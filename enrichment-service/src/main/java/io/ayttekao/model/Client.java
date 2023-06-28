@@ -1,13 +1,9 @@
 package io.ayttekao.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Client {
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 }

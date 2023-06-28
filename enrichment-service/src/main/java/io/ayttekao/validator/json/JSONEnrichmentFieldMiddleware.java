@@ -8,7 +8,7 @@ import io.ayttekao.validator.Middleware;
 
 public class JSONEnrichmentFieldMiddleware extends Middleware {
     @Override
-    public Boolean check(Message message) {
+    public boolean check(Message message) {
         var node = tryGetNodeOrEmpty(message.getContent());
 
         if (node.has(message.getEnrichmentType().toString())) {

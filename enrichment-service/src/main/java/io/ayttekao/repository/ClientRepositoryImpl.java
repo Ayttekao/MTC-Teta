@@ -1,6 +1,7 @@
 package io.ayttekao.repository;
 
 import io.ayttekao.model.Client;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +9,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 public class ClientRepositoryImpl implements ClientRepository {
-    private final ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Client> clients;
 
     @Override
     public Optional<Client> findByMsisdn(String msisdn) {

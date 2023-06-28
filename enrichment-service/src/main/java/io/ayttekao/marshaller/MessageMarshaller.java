@@ -1,9 +1,10 @@
 package io.ayttekao.marshaller;
 
-import java.util.Map;
+import io.ayttekao.model.EnrichRequest;
+import io.ayttekao.model.EnrichResponse;
 
 public interface MessageMarshaller {
-    Map<String, Object> marshall(String message);
+    EnrichRequest marshall(String message);
 
-    String unmarshall(Map<String, Object> map);
+    String unmarshall(EnrichResponse response);
 }

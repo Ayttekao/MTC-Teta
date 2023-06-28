@@ -14,9 +14,9 @@ public abstract class Middleware {
         return first;
     }
 
-    public abstract Boolean check(Message message);
+    public abstract boolean check(Message message);
 
-    protected Boolean checkNext(Message message) {
+    protected boolean checkNext(Message message) {
         if (next == null) {
             return true;
         }

@@ -7,8 +7,8 @@ import io.ayttekao.model.EnrichmentType;
 import io.ayttekao.model.Message;
 import io.ayttekao.repository.ClientRepository;
 import io.ayttekao.repository.ClientRepositoryImpl;
-import io.ayttekao.repository.MessageRepository;
-import io.ayttekao.repository.MessageRepositoryImpl;
+import io.ayttekao.repository.EnrichRepository;
+import io.ayttekao.repository.EnrichRepositoryImpl;
 import io.ayttekao.service.EnrichmentService;
 import io.ayttekao.service.EnrichmentServiceImpl;
 import io.ayttekao.validator.MessageValidator;
@@ -21,10 +21,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 
-import static Utils.RandomTestUtils.randomString;
+import static utils.RandomTestUtils.randomString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,9 +37,9 @@ class MultiThreadEnrichmentServiceTest {
     );
     private static final MessageMarshaller messageMarshaller = new JSONMarshaller();
     private static final MessageValidator validator = new MessageValidatorImpl(middleware);
-    private static final ClientRepository clientRepository = new ClientRepositoryImpl();
-    private static final MessageRepository enrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
-    private static final MessageRepository nonEnrichedMessages = new MessageRepositoryImpl(new ConcurrentLinkedQueue<>());
+    private static final ClientRepository clientRepository = new ClientRepositoryImpl(new ConcurrentHashMap<>());
+    private static final EnrichRepository<Message> enrichedMessages = new EnrichRepositoryImpl<>(new ConcurrentLinkedQueue<>());
+    private static final EnrichRepository<Message> nonEnrichedMessages = new EnrichRepositoryImpl<>(new ConcurrentLinkedQueue<>());
 
     @Test
     void shouldEnrichMessageInMultiThreadedEnvironment() {
@@ -63,7 +64,7 @@ class MultiThreadEnrichmentServiceTest {
 
         assertEquals(1000, enrichedMessages.getAll().size() + nonEnrichedMessages.getAll().size());
 
-        for (Message message : enrichedMessages.getAll()) {
+        for (var message : enrichedMessages.getAll()) {
             assertTrue(message.getContent().contains("enrichment"));
         }
     }
@@ -87,11 +88,13 @@ class MultiThreadEnrichmentServiceTest {
     }
 
     private Message createValidMessage(String msisdn, EnrichmentType enrichmentType) {
-        var context = "{\n"
-                + "\"action\":\"button_click\",\n"
-                + "\"page\":\"book_card\",\n"
-                + String.format("\"msisdn\":\"%s\"\n", msisdn)
-                + "}";
+        var context = String.format("""
+                {
+                  "action":"button_click",
+                  "page":"book_card",
+                  "msisdn":"%s"
+                }
+                """, msisdn);
 
         return new Message(context, enrichmentType);
     }

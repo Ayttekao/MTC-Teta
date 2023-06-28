@@ -11,7 +11,7 @@ public class JSONFormatMiddleware extends Middleware {
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
     @Override
-    public Boolean check(Message message) {
+    public boolean check(Message message) {
         try {
             mapper.readTree(message.getContent());
         } catch (JacksonException e) {

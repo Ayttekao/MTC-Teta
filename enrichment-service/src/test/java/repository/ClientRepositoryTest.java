@@ -9,21 +9,23 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static Utils.RandomTestUtils.randomString;
+import static utils.ConverterTestUtils.buildPojo;
+import static utils.RandomTestUtils.randomString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientRepositoryTest {
     private static final String TEST_MSISDN = randomString(11, false, true);
-    private static final Client TEST_CLIENT = new Client("Elliot", "Alderson");
+    private static final Client TEST_CLIENT = buildPojo(Client.class);
     private ClientRepository clientRepository;
 
     @BeforeEach
     void beforeEach() {
-        clientRepository = new ClientRepositoryImpl();
+        clientRepository = new ClientRepositoryImpl(new ConcurrentHashMap<>());
     }
 
     @Test
